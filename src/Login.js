@@ -1,33 +1,33 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Redirect } from 'react-router-dom';
 
 import { fakeAuth } from './fakeAuth';
 
-class Login extends Component {
+class Login extends React.Component {
     state = {
-        isLoggedIn: false
-    }
+      redirectToReferrer: false
+    };
+  
     login = () => {
-        fakeAuth.authenticate(() => {
-            this.setState(() => ({
-                isLoggedIn: true
-            }))
-        })
-    }
+      fakeAuth.authenticate(() => {
+        this.setState({ redirectToReferrer: true });
+      });
+    };
+  
     render() {
-        const { from } = this.props.location.state || { from: { pathname: '/' } }
-        const { isLoggedIn } = this.state
-
-        if (isLoggedIn === true) {
-            <Redirect to={from} />
-        }
-
-        return (
-            <div>
-                <p>You must log in to view the page</p>
-                <button onClick={this.login}>Log in</button>
-            </div>
-        )
+      const { from } = this.props.location.state || { from: { pathname: "/" } };
+      const { redirectToReferrer } = this.state;
+  
+      if (redirectToReferrer) {
+        return <Redirect to={from} />;
+      }
+  
+      return (
+        <div>
+          <p>You must log in to view the page at {from.pathname}</p>
+          <button onClick={this.login}>Log in</button>
+        </div>
+      );
     }
-}
+  }
 export default Login;
